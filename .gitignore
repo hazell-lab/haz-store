@@ -1,0 +1,14 @@
+# dependencies and build output
+node_modules/
+dist/
+coverage/
+
+# local env files (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# editor and os files
+.DS_Store
+Thumbs.db
+*.log

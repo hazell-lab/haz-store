@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Haz Store is a fictional electronics store with a small, carefully edited range of laptops, phones, audio and accessories.">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+    <title>Haz Store | Technology, edited</title>
+
+    <!-- link preview when the site is shared (linkedin, whatsapp, etc.) -->
+    <meta property="og:title" content="Haz Store | Technology, edited">
+    <meta property="og:description" content="A responsive e-commerce frontend built with React and Vite. Demo shop, no real orders.">
+    <meta property="og:type" content="website">
+
+    <!-- favicon (yellow square with a bold h) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23ffd60a'/%3E%3Ctext x='16' y='24' font-family='Arial Black,Arial,sans-serif' font-weight='900' font-size='22' text-anchor='middle' fill='%230a0a0a'%3EH%3C/text%3E%3C/svg%3E">
+
+    <!-- set the saved theme before the page paints (avoids a flash) -->
+    <script>
+        (function () {
+            document.documentElement.classList.add("js");
+            try {
+                var theme = localStorage.getItem("HazStoreTheme");
+                if (theme !== "light" && theme !== "dark") {
+                    theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+                }
+                document.documentElement.dataset.theme = theme;
+            } catch (error) {}
+        })();
+    </script>
+
+    <!-- google fonts: archivo (one grotesk family, expanded width for display) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <noscript>
+        <p style="padding:24px;font-family:Arial,sans-serif">Haz Store needs JavaScript to show products. Please enable it and reload the page.</p>
+    </noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

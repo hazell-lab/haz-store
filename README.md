@@ -21,7 +21,7 @@ It is a portfolio project. Products, prices and stock are sample data, and the c
 - Slide-in bag drawer and a full bag page, with quantity limits based on stock and a free shipping progress bar (free from RM300, otherwise RM10)
 - Wishlist page with a heart toggle on every product card
 - Recently viewed products (newest first, no duplicates, last six)
-- Demo checkout with field validation (Malaysian phone numbers, 5-digit postcodes), a loading state and a confirmation; no card or bank details are ever asked for
+- Demo checkout with field validation (Malaysian phone numbers, 5-digit postcodes), a loading state and a confirmation that survives a page refresh; no card or bank details are ever asked for
 - Bag, wishlist, recently viewed and theme are saved in local storage, checked against the catalog on load and kept in sync between tabs
 
 **Quality**
@@ -30,6 +30,8 @@ It is a portfolio project. Products, prices and stock are sample data, and the c
 - Keyboard accessible throughout: focus moves to the page heading after navigation, drawers trap focus and close with Escape, labels and live regions everywhere
 - Animations are turned off for users who enable "reduce motion"
 - Pages other than home are code split and load on first visit
+- Self-hosted, preloaded font and WebP photos; space is reserved while content loads, so the page does not jump
+- Page titles and descriptions per route, a link preview image, `robots.txt` and a `sitemap.xml` generated from the catalog at build time
 
 ## Technologies
 
@@ -37,7 +39,7 @@ It is a portfolio project. Products, prices and stock are sample data, and the c
 - Vite 8
 - Vitest, React Testing Library, user-event and jest-dom (jsdom)
 - CSS with custom properties, grid and flexbox (no CSS framework)
-- Google Fonts (Archivo) and inline SVG icons
+- Archivo variable font, self-hosted with Fontsource, and inline SVG icons
 
 ## Getting started
 
@@ -73,10 +75,12 @@ None. The app has no backend, API keys or secrets. Products are loaded from the 
 
 ```
 Haz-Store/
-├── index.html                 # vite entry (theme script, fonts, root element)
+├── index.html                 # vite entry (theme script, meta tags, root element)
 ├── public/
 │   ├── _redirects             # netlify: send every route to the app
-│   ├── assets/images/         # product photos
+│   ├── robots.txt             # search engine rules (sitemap is built by vite)
+│   ├── og-image.jpg           # link preview image
+│   ├── assets/images/         # product photos (webp)
 │   └── data/products.json     # the product catalog
 ├── src/
 │   ├── main.jsx               # renders the app
@@ -93,25 +97,37 @@ Haz-Store/
 │   └── test/                  # test setup and helpers
 ├── docs/                      # screenshot
 ├── netlify.toml
-└── vite.config.js
+└── vite.config.js             # build, tests, sitemap and font preload
 ```
 
 Business rules (prices, filters, cart totals, validation) are plain functions in `src/utils`, so they are easy to test and reuse. Components stay small and get their data from hooks.
 
 ## Tests
 
-`npm test` runs 72 tests in 12 files:
+`npm test` runs 74 tests in 12 files:
 
 - unit tests for pricing, price formatting, search, every filter and sort, URL filter parsing, cart maths, saved data cleaning, recently viewed order, form validation and the catalog loader
-- DOM tests that render the whole app and use it like a person would: filtering and clearing, search suggestions, adding to the bag, quantity and stock limits, wishlist, product pages, the demo checkout (errors, loading, confirmation), loading and error states, the mobile menu and the 404 page
+- DOM tests that render the whole app and use it like a person would: filtering and clearing, search suggestions, adding to the bag, quantity and stock limits, wishlist, product pages, the demo checkout (errors, loading, confirmation, keeping it after a refresh), loading and error states, the mobile menu and the 404 page
 
 ## Deployment (Netlify)
 
 `netlify.toml` already holds the settings: build command `npm run build`, publish folder `dist`, and a redirect that sends every route to `index.html` so links like `/product/3` work on refresh. Connect the repository in Netlify and it builds on every push.
 
+## Lighthouse
+
+Run on the production build (`npm run preview`) on 24 November 2026, Lighthouse 12:
+
+| Page | Mobile (perf / a11y / best practices / SEO) | Desktop |
+| --- | --- | --- |
+| Home | 97 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| Shop | 96 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+| Product | 97 / 100 / 100 / 100 | 100 / 100 / 100 / 100 |
+
+The bag and checkout pages score lower on SEO on purpose: `robots.txt` keeps them out of search results. Scores on the live site can differ a little because of network conditions.
+
 ## Adding products
 
-Add an object to the `products` array in `public/data/products.json` and put the photo in `public/assets/images/`:
+Add an object to the `products` array in `public/data/products.json` and put the photo in `public/assets/images/` (WebP is smallest, JPG and PNG also work):
 
 ```json
 {
@@ -122,7 +138,7 @@ Add an object to the `products` array in `public/data/products.json` and put the
   "discount": 0,
   "rating": 4.3,
   "stock": 20,
-  "image": "/assets/images/product-21.jpg",
+  "image": "/assets/images/product-21.webp",
   "description": "Small Bluetooth speaker with deep bass.",
   "featured": false
 }

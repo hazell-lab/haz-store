@@ -32,8 +32,8 @@
     --btn-fg: var(--on-signal);
 
     /* type: one grotesk family, expanded for display */
-    --font-display: "Archivo", "Arial Black", "Helvetica Neue", Arial, sans-serif;
-    --font-text: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
+    --font-display: "Archivo Variable", "Archivo", "Arial Black", "Helvetica Neue", Arial, sans-serif;
+    --font-text: "Archivo Variable", "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
     --font-mono: var(--font-text);   /* no mono labels in this identity */
     --wdth-display: 125;
 

@@ -505,3 +505,15 @@ main h1:focus {
         gap: 2px;
     }
 }
+
+/* keep the footer below the fold while a page loads, so it does not jump */
+#main {
+    min-height: 100vh;
+    min-height: 100svh;
+}
+
+/* spotlight shapes shown while the catalog loads */
+.is-placeholder .spotlight-tab {
+    pointer-events: none;
+    opacity: 0.5;
+}

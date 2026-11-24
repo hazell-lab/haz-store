@@ -101,3 +101,39 @@ export function SpotlightStage({ spotlight }) {
     </div>
   );
 }
+
+// empty shapes with the same size as the spotlight, shown while the catalog loads
+// so the page below does not jump when the products arrive
+export function SpotlightTabsPlaceholder({ count }) {
+  return (
+    <div className="spotlight-tabs is-placeholder" aria-hidden="true">
+      {Array.from({ length: count }, (_, itemIndex) => (
+        <div className="spotlight-tab" key={itemIndex}>
+          <span className="spotlight-num">{pad(itemIndex + 1)}</span>
+          <span className="spotlight-name">&nbsp;</span>
+          <span className="spotlight-price">&nbsp;</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function SpotlightStagePlaceholder() {
+  return (
+    <div className="hero-stage is-placeholder" aria-hidden="true">
+      <figure className="hero-figure">
+        <div className="stage-plate" />
+        <figcaption className="stage-caption">
+          <div>
+            <p className="stage-name">&nbsp;</p>
+            <p className="stage-desc">
+              &nbsp;
+              <br />
+              &nbsp;
+            </p>
+          </div>
+        </figcaption>
+      </figure>
+    </div>
+  );
+}

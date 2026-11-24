@@ -4,7 +4,13 @@ import { CatalogGate } from "../components/CatalogGate.jsx";
 import { Icon } from "../components/Icon.jsx";
 import { ProductGrid } from "../components/ProductGrid.jsx";
 import { ProductImage } from "../components/ProductImage.jsx";
-import { SpotlightStage, SpotlightTabs, useSpotlight } from "../components/Spotlight.jsx";
+import {
+  SpotlightStage,
+  SpotlightStagePlaceholder,
+  SpotlightTabs,
+  SpotlightTabsPlaceholder,
+  useSpotlight,
+} from "../components/Spotlight.jsx";
 import {
   DEALS_LIMIT,
   FEATURED_LIMIT,
@@ -40,7 +46,7 @@ function SectionHeader({ kicker, title, id, subtitle, split = true }) {
   );
 }
 
-function Hero({ products }) {
+function Hero({ products, loading }) {
   const spotlightProducts = useMemo(() => pickSpotlight(products, SPOTLIGHT_LIMIT), [products]);
   const spotlight = useSpotlight(spotlightProducts);
 
@@ -64,8 +70,10 @@ function Hero({ products }) {
             </Link>
           </div>
           {spotlightProducts.length > 0 && <SpotlightTabs spotlight={spotlight} />}
+          {loading && <SpotlightTabsPlaceholder count={SPOTLIGHT_LIMIT} />}
         </div>
         {spotlightProducts.length > 0 && <SpotlightStage spotlight={spotlight} />}
+        {loading && <SpotlightStagePlaceholder />}
       </div>
     </section>
   );
@@ -172,7 +180,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Hero products={ready ? products : []} />
+      <Hero products={ready ? products : []} loading={status === "loading"} />
       <Promises />
 
       <section className="section" id="categories" aria-labelledby="categoriesTitle">

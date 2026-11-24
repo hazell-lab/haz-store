@@ -129,7 +129,7 @@ function ShopResults() {
 }
 
 export default function ShopPage() {
-  usePageTitle("Shop all products");
+  usePageTitle("Shop all products", "Browse every Haz Store product. Filter by category, price, rating and stock, and sort by price or rating.");
 
   return (
     <section className="section shop-page" id="shop" aria-labelledby="shopTitle">

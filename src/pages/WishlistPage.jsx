@@ -40,7 +40,7 @@ function WishlistContent() {
 }
 
 export default function WishlistPage() {
-  usePageTitle("Wishlist");
+  usePageTitle("Wishlist", "Products you saved for later at Haz Store.");
   const { count } = useWishlist();
 
   return (

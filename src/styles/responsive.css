@@ -393,8 +393,14 @@
         margin-left: 0;
     }
 
+    /* hidden visually but still names the select for screen readers */
     .sort-box label {
-        display: none;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
     }
 
     .sort-box .form-control {

@@ -5,6 +5,7 @@ import { afterEach, beforeEach, vi } from "vitest";
 // jsdom does not have these browser apis
 beforeEach(() => {
   window.localStorage.clear();
+  window.sessionStorage.clear();
   window.scrollTo = vi.fn();
   Element.prototype.scrollIntoView = vi.fn();
   window.matchMedia = vi.fn().mockImplementation((query) => ({

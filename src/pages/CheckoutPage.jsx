@@ -5,7 +5,7 @@ import { CatalogGate } from "../components/CatalogGate.jsx";
 import { FormField } from "../components/FormField.jsx";
 import { Icon } from "../components/Icon.jsx";
 import { ProductImage } from "../components/ProductImage.jsx";
-import { DEMO_ORDER_DELAY, MALAYSIAN_STATES, PAYMENT_METHODS } from "../config.js";
+import { DEMO_ORDER_DELAY, MALAYSIAN_STATES, PAYMENT_METHODS, STORAGE_KEYS } from "../config.js";
 import { useToast } from "../context/ToastContext.jsx";
 import { useCart } from "../hooks/useCart.js";
 import { usePageTitle } from "../hooks/usePageMeta.js";
@@ -16,6 +16,36 @@ const EMPTY_FORM = { fullName: "", email: "", phone: "", address: "", city: "", 
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// the confirmation is kept in session storage so a refresh does not lose it
+// it is removed when the user leaves the checkout page
+function readLastOrder() {
+  try {
+    const order = JSON.parse(window.sessionStorage.getItem(STORAGE_KEYS.lastOrder));
+    const valid =
+      order &&
+      typeof order.number === "string" &&
+      typeof order.name === "string" &&
+      typeof order.email === "string" &&
+      typeof order.payment === "string" &&
+      Number.isFinite(order.total);
+    return valid ? order : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveLastOrder(order) {
+  try {
+    if (order) {
+      window.sessionStorage.setItem(STORAGE_KEYS.lastOrder, JSON.stringify(order));
+    } else {
+      window.sessionStorage.removeItem(STORAGE_KEYS.lastOrder);
+    }
+  } catch {
+    // storage is blocked, the confirmation still shows until the page is left
+  }
 }
 
 function OrderSuccess({ order }) {
@@ -64,9 +94,18 @@ function CheckoutContent() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [submitting, setSubmitting] = useState(false);
-  const [order, setOrder] = useState(null);
+  const [order, setOrder] = useState(readLastOrder);
   const fieldRefs = useRef({});
   const mounted = useRef(true);
+
+  // save the order while the page is open, forget it when the page is left
+  useEffect(() => {
+    if (!order) {
+      return undefined;
+    }
+    saveLastOrder(order);
+    return () => saveLastOrder(null);
+  }, [order]);
 
   useEffect(() => {
     mounted.current = true;
@@ -267,7 +306,7 @@ function CheckoutContent() {
 }
 
 export default function CheckoutPage() {
-  usePageTitle("Checkout");
+  usePageTitle("Checkout", "Haz Store demo checkout. No payment is taken and nothing is shipped.");
 
   return (
     <section className="section section-alt checkout-section page-section" aria-labelledby="checkoutTitle">

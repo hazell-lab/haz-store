@@ -54,6 +54,27 @@ describe("demo checkout", () => {
     expect(screen.getByText(/^HAZ-\d{6}$/)).toBeInTheDocument();
     expect(screen.getAllByText("Online banking").length).toBeGreaterThan(0);
     expect(JSON.parse(window.localStorage.getItem(STORAGE_KEYS.cart))).toEqual([]);
+    expect(JSON.parse(window.sessionStorage.getItem(STORAGE_KEYS.lastOrder))).toMatchObject({ name: "Test Buyer", total: 209.2 });
+  });
+
+  it("keeps the confirmation after a refresh and forgets it once the page is left", async () => {
+    const saved = { number: "HAZ-123456", name: "Test Buyer", email: "test@example.com", payment: "Online banking", total: 209.2, items: 1 };
+    window.sessionStorage.setItem(STORAGE_KEYS.lastOrder, JSON.stringify(saved));
+    const { user } = renderApp("/checkout");
+
+    expect(await screen.findByRole("heading", { name: "Thank you, Test Buyer." })).toBeInTheDocument();
+    expect(screen.getByText("HAZ-123456")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("link", { name: "Continue shopping" }));
+    expect(await screen.findByRole("heading", { level: 1, name: /shop/i })).toBeInTheDocument();
+    expect(window.sessionStorage.getItem(STORAGE_KEYS.lastOrder)).toBeNull();
+  });
+
+  it("ignores a broken saved order", async () => {
+    window.sessionStorage.setItem(STORAGE_KEYS.lastOrder, "{not json");
+    renderApp("/checkout");
+    await screen.findByRole("heading", { level: 1, name: "Almost yours." });
+    expect(within(screen.getByRole("main")).getByText(/your bag is empty/i)).toBeInTheDocument();
   });
 
   it("never asks for card numbers", async () => {

@@ -10,6 +10,8 @@ describe("product page", () => {
     expect(screen.getByText("You save RM49.80")).toBeInTheDocument();
     expect(screen.getByText("15 in stock", { selector: ".stock-text" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "More in Headphones" })).toBeInTheDocument();
+    expect(document.title).toBe("Nova Wireless Headphones | Haz Store");
+    expect(document.querySelector('meta[name="description"]')).toHaveAttribute("content", expect.stringMatching(/over-ear headphones/i));
 
     await user.click(screen.getByRole("button", { name: "Increase quantity" }));
     await user.click(screen.getByRole("button", { name: "Increase quantity" }));

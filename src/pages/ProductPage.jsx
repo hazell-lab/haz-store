@@ -35,7 +35,7 @@ function ProductDetail({ product }) {
   const related = useMemo(() => getRelated(products, product, RELATED_LIMIT), [products, product]);
   const recentOthers = recent.filter((item) => item.id !== product.id).slice(0, 4);
 
-  usePageTitle(product.name);
+  usePageTitle(product.name, product.description);
 
   // a new product starts at quantity 1 and is saved as recently viewed
   useEffect(() => {

@@ -4,6 +4,8 @@ export const STORAGE_KEYS = {
   wishlist: "HazStoreWishlist",
   recent: "HazStoreRecent",
   theme: "HazStoreTheme",
+  // session storage: the last demo order, so a refresh keeps the confirmation
+  lastOrder: "HazStoreLastOrder",
 };
 
 export const SHIPPING_FEE = 10;

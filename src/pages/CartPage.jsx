@@ -69,7 +69,7 @@ function CartContent() {
 }
 
 export default function CartPage() {
-  usePageTitle("Your bag");
+  usePageTitle("Your bag", "Review the products in your Haz Store bag, change quantities and see shipping before the demo checkout.");
   const { totals } = useCart();
 
   return (

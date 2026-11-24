@@ -12,7 +12,8 @@ import { useProductFilters } from "../hooks/useProductFilters.js";
 function ShopResults() {
   const { products, categories } = useCatalog();
   const { openPanel, closePanel } = useUI();
-  const { filters, results, chips, panelCount, setFilter, clearFilter, clearAll } = useProductFilters(products, categories);
+  const { filters, results, chips, panelCount, priceBounds, setFilter, toggleCategory, setPrice, clearFilter, clearAll } =
+    useProductFilters(products, categories);
   const pageSize = usePageSize();
   const [visible, setVisible] = useState(pageSize);
   const [animateFrom, setAnimateFrom] = useState(-1);
@@ -21,10 +22,14 @@ function ShopResults() {
   const filterKey = JSON.stringify(filters);
 
   // any filter change goes back to the first page
-  useEffect(() => {
+  // (adjusted during render, so the old page count is never shown)
+  const resetKey = filterKey + "|" + pageSize;
+  const [lastResetKey, setLastResetKey] = useState(resetKey);
+  if (resetKey !== lastResetKey) {
+    setLastResetKey(resetKey);
     setVisible(pageSize);
     setAnimateFrom(0);
-  }, [filterKey, pageSize]);
+  }
 
   // leaving the mobile layout closes the filter sheet
   useEffect(() => {
@@ -36,8 +41,7 @@ function ShopResults() {
 
   const shown = results.slice(0, visible);
   const total = products.length;
-  const countText =
-    results.length === total ? "All " + total + " products" : results.length + " of " + total + " products match";
+  const countText = results.length === total ? "All " + total + " products" : results.length + " of " + total + " products match";
 
   function showMore() {
     const previous = visible;
@@ -57,7 +61,13 @@ function ShopResults() {
 
   return (
     <>
-      <CategoryPills categories={categories} products={products} value={filters.category} onChange={(value) => setFilter("category", value)} />
+      <CategoryPills
+        categories={categories}
+        products={products}
+        selected={filters.category}
+        onToggle={toggleCategory}
+        onClear={() => setFilter("category", [])}
+      />
 
       <div className="shop-toolbar">
         <div className="search-box">
@@ -84,7 +94,16 @@ function ShopResults() {
       </div>
 
       <div className="shop-layout">
-        <FilterPanel filters={filters} categories={categories} onChange={setFilter} onClear={clearAll} resultCount={results.length} />
+        <FilterPanel
+          filters={filters}
+          categories={categories}
+          priceBounds={priceBounds}
+          onChange={setFilter}
+          onToggleCategory={toggleCategory}
+          onPriceChange={setPrice}
+          onClear={clearAll}
+          resultCount={results.length}
+        />
 
         <div className="shop-results">
           <h2 className="visually-hidden">Products</h2>
@@ -129,7 +148,10 @@ function ShopResults() {
 }
 
 export default function ShopPage() {
-  usePageTitle("Shop all products", "Browse every Haz Store product. Filter by category, price, rating and stock, and sort by price or rating.");
+  usePageTitle(
+    "Shop all products",
+    "Browse every Haz Store product. Filter by category, price, rating and stock, and sort by price or rating.",
+  );
 
   return (
     <section className="section shop-page" id="shop" aria-labelledby="shopTitle">
@@ -141,7 +163,9 @@ export default function ShopPage() {
               Shop all products
             </h1>
           </div>
-          <p className="section-subtitle">Search, filter and sort to find what you need. Filters are saved in the link, so you can share them.</p>
+          <p className="section-subtitle">
+            Search, filter and sort to find what you need. Filters are saved in the link, so you can share them.
+          </p>
         </header>
         <CatalogGate skeletons={8}>
           <ShopResults />

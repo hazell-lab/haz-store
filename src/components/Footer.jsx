@@ -25,19 +25,39 @@ export function Footer() {
           <div className="footer-col">
             <h2>Shop</h2>
             <ul>
-              <li><Link to="/shop">All products</Link></li>
-              <li><Link to="/#featured">Featured</Link></li>
-              <li><Link to="/#deals">Deals</Link></li>
-              <li><Link to="/#categories">Categories</Link></li>
+              <li>
+                <Link to="/shop">All products</Link>
+              </li>
+              <li>
+                <Link to="/#featured">Featured</Link>
+              </li>
+              <li>
+                <Link to="/#deals">Deals</Link>
+              </li>
+              <li>
+                <Link to="/#categories">Categories</Link>
+              </li>
             </ul>
           </div>
 
           <div className="footer-col">
             <h2>Your account</h2>
             <ul>
-              <li><Link to="/cart">Bag</Link></li>
-              <li><Link to="/wishlist">Wishlist</Link></li>
-              <li><Link to="/checkout">Checkout</Link></li>
+              <li>
+                <Link to="/cart">Bag</Link>
+              </li>
+              <li>
+                <Link to="/wishlist">Wishlist</Link>
+              </li>
+              <li>
+                <Link to="/compare">Compare</Link>
+              </li>
+              <li>
+                <Link to="/orders">Demo orders</Link>
+              </li>
+              <li>
+                <Link to="/checkout">Checkout</Link>
+              </li>
             </ul>
           </div>
 
@@ -57,7 +77,9 @@ export function Footer() {
           <div className="footer-col">
             <h2>Company</h2>
             <ul>
-              <li><Link to="/#about">About</Link></li>
+              <li>
+                <Link to="/#about">About</Link>
+              </li>
             </ul>
           </div>
         </div>

@@ -17,7 +17,8 @@ function sitemap() {
       this.emitFile({
         type: "asset",
         fileName: "sitemap.xml",
-        source: '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "\n</urlset>\n",
+        source:
+          '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls + "\n</urlset>\n",
       });
     },
   };
@@ -57,5 +58,13 @@ export default defineConfig({
     setupFiles: "./src/test/setup.js",
     css: false,
     include: ["src/**/*.test.{js,jsx}"],
+    // full app dom tests can be slow on a busy machine or ci runner
+    testTimeout: 15000,
+    coverage: {
+      provider: "v8",
+      include: ["src/**/*.{js,jsx}"],
+      exclude: ["src/**/*.test.{js,jsx}", "src/test/**", "src/main.jsx"],
+      reporter: ["text-summary", "html"],
+    },
   },
 });

@@ -4,13 +4,7 @@ import { useStore } from "../context/StoreContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
 import { useUI } from "../context/UIContext.jsx";
 import { getProductById } from "../utils/catalog.js";
-import {
-  addToCart,
-  getCartLines,
-  getCartTotals,
-  removeFromCart,
-  setCartQuantity,
-} from "../utils/cart.js";
+import { addManyToCart, addToCart, getCartLines, getCartTotals, removeFromCart, setCartQuantity } from "../utils/cart.js";
 
 // everything the ui needs for the shopping bag
 export function useCart() {
@@ -35,11 +29,32 @@ export function useCart() {
       // no "view bag" link when the bag is already open
       showToast(
         product.name + " added to your bag",
-        panel === "cart" ? undefined : { label: "View bag", onClick: () => openPanel("cart") }
+        panel === "cart" ? undefined : { label: "View bag", onClick: () => openPanel("cart") },
       );
       return true;
     },
-    [products, cart, setCart, showToast, panel, openPanel]
+    [products, cart, setCart, showToast, panel, openPanel],
+  );
+
+  // add several products at once, returns { added, skipped } (lists of ids)
+  const addMany = useCallback(
+    (items) => {
+      const result = addManyToCart(cart, products, items);
+      if (result.added.length > 0) {
+        setCart(result.cart);
+      }
+      const addedCount = result.added.length;
+      const parts = [];
+      if (addedCount > 0) {
+        parts.push(addedCount + (addedCount === 1 ? " product" : " products") + " added to your bag");
+      }
+      if (result.skipped.length > 0) {
+        parts.push(result.skipped.length + " could not be added (out of stock or at the stock limit)");
+      }
+      showToast(parts.join(", "), addedCount > 0 && panel !== "cart" ? { label: "View bag", onClick: () => openPanel("cart") } : undefined);
+      return { added: result.added.map((item) => item.id), skipped: result.skipped };
+    },
+    [products, cart, setCart, showToast, panel, openPanel],
   );
 
   const setQuantity = useCallback(
@@ -58,7 +73,7 @@ export function useCart() {
       }
       return true;
     },
-    [products, cart, setCart, showToast]
+    [products, cart, setCart, showToast],
   );
 
   const remove = useCallback(
@@ -66,7 +81,7 @@ export function useCart() {
       setCart(removeFromCart(cart, id));
       showToast("Product removed from cart");
     },
-    [cart, setCart, showToast]
+    [cart, setCart, showToast],
   );
 
   // quiet clears the bag without a toast (used after the demo order)
@@ -77,13 +92,16 @@ export function useCart() {
         showToast("Cart cleared");
       }
     },
-    [setCart, showToast]
+    [setCart, showToast],
   );
 
-  const getQuantity = useCallback((id) => {
-    const item = cart.find((cartItem) => cartItem.id === id);
-    return item ? item.quantity : 0;
-  }, [cart]);
+  const getQuantity = useCallback(
+    (id) => {
+      const item = cart.find((cartItem) => cartItem.id === id);
+      return item ? item.quantity : 0;
+    },
+    [cart],
+  );
 
-  return { lines, totals, add, setQuantity, remove, clear, getQuantity };
+  return { lines, totals, add, addMany, setQuantity, remove, clear, getQuantity };
 }

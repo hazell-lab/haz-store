@@ -31,6 +31,12 @@ export function CartTotals({ totals }) {
         <span>Subtotal</span>
         <span data-testid="subtotal">{formatPrice(totals.subtotal)}</span>
       </div>
+      {totals.discount > 0 && (
+        <div className="totals-row totals-discount">
+          <span>Promo discount</span>
+          <span data-testid="discount">−{formatPrice(totals.discount)}</span>
+        </div>
+      )}
       <div className="totals-row">
         <span>Shipping</span>
         <span data-testid="shipping">{totals.isFreeShipping ? "Free" : formatPrice(totals.shipping)}</span>

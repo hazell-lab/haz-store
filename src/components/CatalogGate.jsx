@@ -6,13 +6,10 @@ import { ErrorState, LoadingState } from "./States.jsx";
 export function CatalogGate({ children, skeletons = 4, wrapClass }) {
   const { status, error, reload } = useCatalog();
 
-  let content = null;
-  if (status === "loading") {
-    content = <LoadingState count={skeletons} />;
-  } else if (status === "error") {
-    content = <ErrorState message={error && error.message} onRetry={reload} />;
-  } else {
+  if (status === "ready") {
     return children;
   }
+  const content =
+    status === "loading" ? <LoadingState count={skeletons} /> : <ErrorState message={error && error.message} onRetry={reload} />;
   return wrapClass ? <div className={wrapClass}>{content}</div> : content;
 }

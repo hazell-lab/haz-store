@@ -23,7 +23,7 @@ export function renderApp(route = "/", { fetcher, withCatalog = true } = {}) {
         <AppRoutes />
         <LocationProbe />
       </AppProviders>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
   return { user, ...utils };
 }

@@ -29,7 +29,12 @@ export function CartItem({ line, onQuantity, onRemove, onNavigate }) {
       </div>
       <div className="cart-item-right">
         <span className="cart-item-subtotal">{formatPrice(lineTotal)}</span>
-        <button type="button" className="remove-btn" onClick={() => onRemove(product.id)} aria-label={"Remove " + product.name + " from cart"}>
+        <button
+          type="button"
+          className="remove-btn"
+          onClick={() => onRemove(product.id)}
+          aria-label={"Remove " + product.name + " from cart"}
+        >
           Remove
         </button>
       </div>

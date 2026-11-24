@@ -10,20 +10,17 @@ export function useRecentlyViewed() {
   const { products } = useCatalog();
   const { recent, setRecent } = useStore();
 
-  const items = useMemo(
-    () => recent.map((id) => getProductById(products, id)).filter(Boolean),
-    [recent, products]
-  );
+  const items = useMemo(() => recent.map((id) => getProductById(products, id)).filter(Boolean), [recent, products]);
 
   const addViewed = useCallback(
     (id) => {
-      const next = pushRecent(recent, id, RECENT_LIMIT);
-      // skip the update when nothing changed (avoids extra renders)
-      if (next.join() !== recent.join()) {
-        setRecent(next);
-      }
+      setRecent((current) => {
+        const next = pushRecent(current, id, RECENT_LIMIT);
+        // keep the same list when nothing changed (avoids extra renders)
+        return next.join() === current.join() ? current : next;
+      });
     },
-    [recent, setRecent]
+    [setRecent],
   );
 
   const clear = useCallback(() => setRecent([]), [setRecent]);

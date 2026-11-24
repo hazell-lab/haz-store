@@ -6,6 +6,8 @@ export const STORAGE_KEYS = {
   theme: "HazStoreTheme",
   // session storage: the last demo order, so a refresh keeps the confirmation
   lastOrder: "HazStoreLastOrder",
+  orders: "HazStoreOrders",
+  compare: "HazStoreCompare",
 };
 
 export const SHIPPING_FEE = 10;
@@ -16,6 +18,11 @@ export const DEALS_LIMIT = 4;
 export const TOP_RATED_LIMIT = 4;
 export const SPOTLIGHT_LIMIT = 3;
 export const RELATED_LIMIT = 4;
+export const ORDER_HISTORY_LIMIT = 10;
+export const COMPARE_LIMIT = 3;
+
+// the one demo promo code (shown openly at checkout, nothing real is discounted)
+export const DEMO_PROMO = { code: "HAZDEMO10", percent: 10 };
 
 // shop page size by screen width
 export const PAGE_SIZES = { small: 8, medium: 9, large: 12 };
@@ -33,7 +40,20 @@ export const PAYMENT_METHODS = [
 ];
 
 export const MALAYSIAN_STATES = [
-  "Johor", "Kedah", "Kelantan", "Kuala Lumpur", "Labuan", "Melaka",
-  "Negeri Sembilan", "Pahang", "Penang", "Perak", "Perlis", "Putrajaya",
-  "Sabah", "Sarawak", "Selangor", "Terengganu",
+  "Johor",
+  "Kedah",
+  "Kelantan",
+  "Kuala Lumpur",
+  "Labuan",
+  "Melaka",
+  "Negeri Sembilan",
+  "Pahang",
+  "Penang",
+  "Perak",
+  "Perlis",
+  "Putrajaya",
+  "Sabah",
+  "Sarawak",
+  "Selangor",
+  "Terengganu",
 ];

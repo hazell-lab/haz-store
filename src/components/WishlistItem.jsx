@@ -24,7 +24,12 @@ export function WishlistItem({ product, inCart, onAdd, onRemove }) {
       </div>
       <div className="cart-item-right">
         <span />
-        <button type="button" className="remove-btn" onClick={() => onRemove(product.id)} aria-label={"Remove " + product.name + " from wishlist"}>
+        <button
+          type="button"
+          className="remove-btn"
+          onClick={() => onRemove(product.id)}
+          aria-label={"Remove " + product.name + " from wishlist"}
+        >
           Remove
         </button>
       </div>

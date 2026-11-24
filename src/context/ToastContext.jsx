@@ -21,9 +21,12 @@ export function ToastProvider({ children }) {
       const id = nextId++;
       // keep at most two toasts on screen
       setToasts((list) => [...list, { id, message, action }].slice(-MAX_TOASTS));
-      timers.current.set(id, setTimeout(() => dismiss(id), action ? 4000 : 2500));
+      timers.current.set(
+        id,
+        setTimeout(() => dismiss(id), action ? 4000 : 2500),
+      );
     },
-    [dismiss]
+    [dismiss],
   );
 
   useEffect(() => {

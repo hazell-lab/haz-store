@@ -21,6 +21,8 @@ function writeStorage(key, value) {
 // state that is saved to local storage and stays in sync between tabs
 export function useLocalStorage(key, initialValue) {
   const [value, setValue] = useState(() => readStorage(key, initialValue));
+  // the fallback is fixed on the first render
+  const [fallback] = useState(initialValue);
 
   useEffect(() => {
     writeStorage(key, value);
@@ -30,13 +32,12 @@ export function useLocalStorage(key, initialValue) {
   useEffect(() => {
     function handleStorage(event) {
       if (event.key === key) {
-        setValue(readStorage(key, initialValue));
+        setValue(readStorage(key, fallback));
       }
     }
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-    // initialValue is only a fallback, so it is left out on purpose
-  }, [key]);
+  }, [key, fallback]);
 
   const update = useCallback((next) => setValue(next), []);
   return [value, update];

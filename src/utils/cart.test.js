@@ -79,7 +79,15 @@ describe("cart totals", () => {
   });
 
   it("matches the original store maths for a mixed cart", () => {
-    const totals = getCartTotals(getCartLines([{ id: 1, quantity: 3 }, { id: 5, quantity: 4 }], products));
+    const totals = getCartTotals(
+      getCartLines(
+        [
+          { id: 1, quantity: 3 },
+          { id: 5, quantity: 4 },
+        ],
+        products,
+      ),
+    );
     expect(totals.total).toBe(16234.2);
     expect(totals.itemCount).toBe(7);
   });

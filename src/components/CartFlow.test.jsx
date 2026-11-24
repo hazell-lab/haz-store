@@ -17,7 +17,7 @@ describe("bag", () => {
   it("opens the drawer and keeps totals right while quantities change", async () => {
     window.localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify([{ id: 1, quantity: 1 }]));
     const { user } = renderApp("/");
-    await user.click(screen.getByRole("button", { name: /open shopping bag/i }));
+    await user.click(screen.getByRole("button", { name: /^bag, \d+ items?$/i }));
     const drawer = screen.getByRole("dialog", { name: /your bag/i });
     expect(within(drawer).getByTestId("shipping")).toHaveTextContent("RM10.00");
     expect(within(drawer).getByTestId("total")).toHaveTextContent("RM209.20");
@@ -33,7 +33,13 @@ describe("bag", () => {
 
   it("stops at the stock limit and removes at zero", async () => {
     // product 5 has 4 in stock
-    window.localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify([{ id: 5, quantity: 4 }, { id: 2, quantity: 1 }]));
+    window.localStorage.setItem(
+      STORAGE_KEYS.cart,
+      JSON.stringify([
+        { id: 5, quantity: 4 },
+        { id: 2, quantity: 1 },
+      ]),
+    );
     const { user } = renderApp("/cart");
     const increase = await screen.findByRole("button", { name: "Increase quantity of Aero Book 15 Creator" });
     expect(increase).toBeDisabled();
@@ -44,7 +50,13 @@ describe("bag", () => {
   });
 
   it("drops invalid saved items and shows the empty state when cleared", async () => {
-    window.localStorage.setItem(STORAGE_KEYS.cart, JSON.stringify([{ id: 999, quantity: 1 }, { id: 3, quantity: 100 }]));
+    window.localStorage.setItem(
+      STORAGE_KEYS.cart,
+      JSON.stringify([
+        { id: 999, quantity: 1 },
+        { id: 3, quantity: 100 },
+      ]),
+    );
     const { user } = renderApp("/cart");
     await screen.findByRole("heading", { level: 1, name: /your bag/i });
     // unknown id removed, quantity capped at the 8 in stock

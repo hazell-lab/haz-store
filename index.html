@@ -1,49 +1,53 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Haz Store is a fictional electronics store with a small, carefully edited range of laptops, phones, audio and accessories.">
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
-    <title>Haz Store | Technology, edited</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Haz Store is a fictional electronics store with a small, carefully edited range of laptops, phones, audio and accessories."
+        />
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)" />
+        <title>Haz Store | Technology, edited</title>
 
-    <!-- link preview when the site is shared (linkedin, whatsapp, etc.) -->
-    <meta property="og:site_name" content="Haz Store">
-    <meta property="og:title" content="Haz Store | Technology, edited">
-    <meta property="og:description" content="A responsive e-commerce frontend built with React and Vite. Demo shop, no real orders.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://hazstore-ecommerce.netlify.app/">
-    <meta property="og:image" content="https://hazstore-ecommerce.netlify.app/og-image.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Haz Store home page with the headline Technology, edited.">
-    <meta name="twitter:card" content="summary_large_image">
+        <!-- link preview when the site is shared (linkedin, whatsapp, etc.) -->
+        <meta property="og:site_name" content="Haz Store" />
+        <meta property="og:title" content="Haz Store | Technology, edited" />
+        <meta property="og:description" content="A responsive e-commerce frontend built with React and Vite. Demo shop, no real orders." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://hazstore-ecommerce.netlify.app/" />
+        <meta property="og:image" content="https://hazstore-ecommerce.netlify.app/og-image.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Haz Store home page with the headline Technology, edited." />
+        <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- favicon (yellow square with a bold h) -->
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <!-- favicon (yellow square with a bold h) -->
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- set the saved theme before the page paints (avoids a flash) -->
-    <script>
-        (function () {
-            document.documentElement.classList.add("js");
-            try {
-                var theme = localStorage.getItem("HazStoreTheme");
-                if (theme !== "light" && theme !== "dark") {
-                    theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-                }
-                document.documentElement.dataset.theme = theme;
-            } catch (error) {}
-        })();
-    </script>
-
-</head>
-<body>
-    <noscript>
-        <p style="padding:24px;font-family:Arial,sans-serif">Haz Store needs JavaScript to show products. Please enable it and reload the page.</p>
-    </noscript>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-</body>
+        <!-- set the saved theme before the page paints (avoids a flash) -->
+        <script>
+            (function () {
+                document.documentElement.classList.add("js");
+                try {
+                    var theme = localStorage.getItem("HazStoreTheme");
+                    if (theme !== "light" && theme !== "dark") {
+                        theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+                    }
+                    document.documentElement.dataset.theme = theme;
+                } catch (error) {}
+            })();
+        </script>
+    </head>
+    <body>
+        <noscript>
+            <p style="padding: 24px; font-family: Arial, sans-serif">
+                Haz Store needs JavaScript to show products. Please enable it and reload the page.
+            </p>
+        </noscript>
+        <div id="root"></div>
+        <script type="module" src="/src/main.jsx"></script>
+    </body>
 </html>

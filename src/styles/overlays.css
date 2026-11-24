@@ -6,7 +6,9 @@
     background: var(--overlay);
     opacity: 0;
     visibility: hidden;
-    transition: opacity var(--dur-2) var(--ease), visibility var(--dur-2);
+    transition:
+        opacity var(--dur-2) var(--ease),
+        visibility var(--dur-2);
 }
 
 .overlay.show {
@@ -27,7 +29,9 @@
     border-left: 2px solid var(--line-strong);
     transform: translateX(100%);
     visibility: hidden;
-    transition: transform 360ms var(--ease), visibility 360ms;
+    transition:
+        transform 360ms var(--ease),
+        visibility 360ms;
 }
 
 .drawer.open {

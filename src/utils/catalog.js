@@ -52,9 +52,7 @@ export function getRelated(products, product, limit) {
   let title = "More in " + product.category;
 
   if (related.length < 2) {
-    related = related.concat(
-      products.filter((item) => item.featured && item.id !== product.id && !related.includes(item))
-    );
+    related = related.concat(products.filter((item) => item.featured && item.id !== product.id && !related.includes(item)));
     title = "You may also like";
   }
 
@@ -63,8 +61,6 @@ export function getRelated(products, product, limit) {
 
 // numbers for the about section, calculated from the real data
 export function getStoreStats(products, categories) {
-  const averageRating = products.length
-    ? products.reduce((sum, product) => sum + product.rating, 0) / products.length
-    : 0;
+  const averageRating = products.length ? products.reduce((sum, product) => sum + product.rating, 0) / products.length : 0;
   return { productCount: products.length, categoryCount: categories.length, averageRating };
 }

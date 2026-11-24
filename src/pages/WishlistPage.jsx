@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { CatalogGate } from "../components/CatalogGate.jsx";
+import { Icon } from "../components/Icon.jsx";
 import { EmptyState } from "../components/States.jsx";
 import { WishlistItem } from "../components/WishlistItem.jsx";
 import { useCart } from "../hooks/useCart.js";
@@ -7,8 +8,15 @@ import { usePageTitle } from "../hooks/usePageMeta.js";
 import { useWishlist } from "../hooks/useWishlist.js";
 
 function WishlistContent() {
-  const { items, toggle } = useWishlist();
-  const { add, getQuantity } = useCart();
+  const { items, toggle, removeMany } = useWishlist();
+  const { add, addMany, getQuantity } = useCart();
+  const canMove = items.some((product) => product.stock > getQuantity(product.id));
+
+  // moved products leave the wishlist, the rest stay saved
+  function moveAll() {
+    const { added } = addMany(items.map((product) => ({ id: product.id, quantity: 1 })));
+    removeMany(added);
+  }
 
   if (items.length === 0) {
     return (
@@ -30,6 +38,12 @@ function WishlistContent() {
   return (
     <>
       <h2 className="visually-hidden">Saved products</h2>
+      <div className="wishlist-actions">
+        <button type="button" className="btn btn-primary" onClick={moveAll} disabled={!canMove}>
+          <Icon name="bag" /> Move all to bag
+        </button>
+        {!canMove && <p className="form-note">Everything here is out of stock or already in your bag.</p>}
+      </div>
       <ul className="wishlist-list" aria-label="Saved products">
         {items.map((product) => (
           <WishlistItem key={product.id} product={product} inCart={getQuantity(product.id) > 0} onAdd={add} onRemove={toggle} />

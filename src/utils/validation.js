@@ -11,9 +11,7 @@ const rules = {
   fullName: (value) => (value.trim().length >= 2 ? "" : "Please enter your full name"),
   email: (value) => (EMAIL_PATTERN.test(value.trim()) ? "" : "Please enter a valid email address"),
   phone: (value) =>
-    PHONE_PATTERN.test(value.trim().replace(/[\s-]/g, ""))
-      ? ""
-      : "Please enter a valid Malaysian phone number, e.g. 012-345 6789",
+    PHONE_PATTERN.test(value.trim().replace(/[\s-]/g, "")) ? "" : "Please enter a valid Malaysian phone number, e.g. 012-345 6789",
   address: (value) => (value.trim() !== "" ? "" : "Please enter your address"),
   city: (value) => (value.trim() !== "" ? "" : "Please enter your city"),
   postcode: (value) => (POSTCODE_PATTERN.test(value.trim()) ? "" : "Postcode must be 5 digits"),

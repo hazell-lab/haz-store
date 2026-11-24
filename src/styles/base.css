@@ -34,7 +34,11 @@ html.theme-transition,
 html.theme-transition *,
 html.theme-transition *::before,
 html.theme-transition *::after {
-    transition: background-color var(--dur-2) ease, color var(--dur-2) ease, border-color var(--dur-2) ease, fill var(--dur-2) ease !important;
+    transition:
+        background-color var(--dur-2) ease,
+        color var(--dur-2) ease,
+        border-color var(--dur-2) ease,
+        fill var(--dur-2) ease !important;
 }
 
 img {

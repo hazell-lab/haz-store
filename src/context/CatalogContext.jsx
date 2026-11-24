@@ -7,9 +7,7 @@ const CatalogContext = createContext(null);
 // initialCatalog skips the request (used by tests)
 export function CatalogProvider({ children, initialCatalog, fetcher }) {
   const [state, setState] = useState(() =>
-    initialCatalog
-      ? { status: "ready", ...initialCatalog, error: null }
-      : { status: "loading", products: [], categories: [], error: null }
+    initialCatalog ? { status: "ready", ...initialCatalog, error: null } : { status: "loading", products: [], categories: [], error: null },
   );
   const [attempt, setAttempt] = useState(0);
 
@@ -18,7 +16,6 @@ export function CatalogProvider({ children, initialCatalog, fetcher }) {
       return undefined;
     }
     const controller = new AbortController();
-    setState((current) => ({ ...current, status: "loading", error: null }));
     fetchCatalog({ signal: controller.signal, fetcher })
       .then((catalog) => setState({ status: "ready", ...catalog, error: null }))
       .catch((error) => {
@@ -29,7 +26,11 @@ export function CatalogProvider({ children, initialCatalog, fetcher }) {
     return () => controller.abort();
   }, [attempt, initialCatalog, fetcher]);
 
-  const reload = useCallback(() => setAttempt((count) => count + 1), []);
+  // show the loading state again, then fetch once more
+  const reload = useCallback(() => {
+    setState((current) => ({ ...current, status: "loading", error: null }));
+    setAttempt((count) => count + 1);
+  }, []);
   const value = useMemo(() => ({ ...state, reload }), [state, reload]);
 
   return <CatalogContext.Provider value={value}>{children}</CatalogContext.Provider>;

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import { useCart } from "../hooks/useCart.js";
 import { useWishlist } from "../hooks/useWishlist.js";
 import { ProductCard } from "./ProductCard.jsx";
@@ -6,12 +6,23 @@ import { EmptyState } from "./States.jsx";
 
 // a grid of product cards, or an empty state when the list is empty
 // animateFrom: index of the first card that animates in (-1 for none)
-export function ProductGrid({ products, className = "", variant, emptyIcon = "search", emptyMessage, animateFrom = -1, eagerCount = 0, label }) {
+export function ProductGrid({
+  products,
+  className = "",
+  variant,
+  emptyIcon = "search",
+  emptyMessage,
+  animateFrom = -1,
+  eagerCount = 0,
+  label,
+}) {
   const { add } = useCart();
   const { ids, toggle } = useWishlist();
   // stable callbacks so memoized cards only re-render when their own data changes
   const latest = useRef({ add, toggle });
-  latest.current = { add, toggle };
+  useLayoutEffect(() => {
+    latest.current = { add, toggle };
+  });
   const handleAdd = useCallback((id, quantity) => latest.current.add(id, quantity), []);
   const handleToggle = useCallback((id) => latest.current.toggle(id), []);
 

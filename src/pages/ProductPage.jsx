@@ -14,6 +14,7 @@ import { useCatalog } from "../context/CatalogContext.jsx";
 import { useCart } from "../hooks/useCart.js";
 import { usePageTitle } from "../hooks/usePageMeta.js";
 import { useRecentlyViewed } from "../hooks/useRecentlyViewed.js";
+import { useCompare } from "../hooks/useCompare.js";
 import { useWishlist } from "../hooks/useWishlist.js";
 import { getProductById, getRelated } from "../utils/catalog.js";
 import { formatPrice } from "../utils/format.js";
@@ -23,32 +24,29 @@ function ProductDetail({ product }) {
   const { products } = useCatalog();
   const { add, getQuantity } = useCart();
   const { has, toggle } = useWishlist();
+  const { has: isCompared, toggle: toggleCompare } = useCompare();
   const { items: recent, addViewed } = useRecentlyViewed();
-  const [quantity, setQuantity] = useState(1);
+  const [chosen, setQuantity] = useState(1);
 
   const salePrice = getSalePrice(product);
   const outOfStock = product.stock === 0;
   const inBag = getQuantity(product.id);
   // you can only add what is left after the bag
   const maxAddable = Math.max(product.stock - inBag, 0);
+  // the stepper never goes above what can still be added
+  const quantity = Math.min(chosen, Math.max(maxAddable, 1));
   const inWishlist = has(product.id);
+  const inCompare = isCompared(product.id);
   const related = useMemo(() => getRelated(products, product, RELATED_LIMIT), [products, product]);
   const recentOthers = recent.filter((item) => item.id !== product.id).slice(0, 4);
 
   usePageTitle(product.name, product.description);
 
-  // a new product starts at quantity 1 and is saved as recently viewed
+  // save the product as recently viewed
+  // (the page is keyed by product id, so the quantity starts at 1 for each product)
   useEffect(() => {
-    setQuantity(1);
     addViewed(product.id);
-  }, [product.id]);
-
-  // keep the stepper inside what can still be added
-  useEffect(() => {
-    if (quantity > Math.max(maxAddable, 1)) {
-      setQuantity(Math.max(maxAddable, 1));
-    }
-  }, [maxAddable, quantity]);
+  }, [product.id, addViewed]);
 
   function handleAdd() {
     if (add(product.id, quantity)) {
@@ -72,16 +70,26 @@ function ProductDetail({ product }) {
     facts.push(["Discount", product.discount + "% (save " + formatPrice(getSavings(product)) + ")"]);
   }
 
-  const addLabel = outOfStock ? "Out of stock" : maxAddable === 0 ? "All stock is in your bag" : "Add to bag — " + formatPrice(salePrice * quantity);
+  const addLabel = outOfStock
+    ? "Out of stock"
+    : maxAddable === 0
+      ? "All stock is in your bag"
+      : "Add to bag — " + formatPrice(salePrice * quantity);
 
   return (
     <>
       <div className="container">
         <nav className="breadcrumb" aria-label="Breadcrumb">
           <ol>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/shop">Shop</Link></li>
-            <li><Link to={"/shop?category=" + encodeURIComponent(product.category)}>{product.category}</Link></li>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/shop">Shop</Link>
+            </li>
+            <li>
+              <Link to={"/shop?category=" + encodeURIComponent(product.category)}>{product.category}</Link>
+            </li>
             <li aria-current="page">{product.name}</li>
           </ol>
         </nav>
@@ -130,6 +138,14 @@ function ProductDetail({ product }) {
                 <span className="visually-hidden">{inWishlist ? "Remove from wishlist" : "Add to wishlist"}</span>
               </button>
             </div>
+            <button
+              type="button"
+              className={"btn-link compare-toggle" + (inCompare ? " active" : "")}
+              aria-pressed={inCompare}
+              onClick={() => toggleCompare(product.id)}
+            >
+              <Icon name="compare" /> {inCompare ? "In your comparison" : "Compare"}
+            </button>
           </div>
 
           <div className="modal-info">

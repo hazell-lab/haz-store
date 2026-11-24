@@ -4,16 +4,16 @@
     --paper: #ffffff;
     --paper-2: #f2f2f2;
     --surface: #ffffff;
-    --plate: #f0f0f0;            /* product photo background */
-    --plate-alt: #ffffff;        /* plate on grey sections */
+    --plate: #f0f0f0; /* product photo background */
+    --plate-alt: #ffffff; /* plate on grey sections */
     --ink: #0a0a0a;
     --ink-2: #333333;
     --ink-3: #636363;
     --line: #d9d9d9;
     --line-soft: #e8e8e8;
     --line-strong: #0a0a0a;
-    --accent: #0a0a0a;           /* text-safe emphasis (never yellow on white) */
-    --signal: #ffd60a;           /* yellow, only ever behind black text */
+    --accent: #0a0a0a; /* text-safe emphasis (never yellow on white) */
+    --signal: #ffd60a; /* yellow, only ever behind black text */
     --on-signal: #0a0a0a;
     --success: #13703a;
     --warning: #8a5300;
@@ -34,7 +34,7 @@
     /* type: one grotesk family, expanded for display */
     --font-display: "Archivo Variable", "Archivo", "Arial Black", "Helvetica Neue", Arial, sans-serif;
     --font-text: "Archivo Variable", "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
-    --font-mono: var(--font-text);   /* no mono labels in this identity */
+    --font-mono: var(--font-text); /* no mono labels in this identity */
     --wdth-display: 125;
 
     --fs-display: clamp(2.2rem, 4.5vw, 5.2rem);
@@ -80,7 +80,7 @@
     --paper: #0a0a0a;
     --paper-2: #161616;
     --surface: #121212;
-    --plate: #ececec;            /* stays light so product photos read well */
+    --plate: #ececec; /* stays light so product photos read well */
     --plate-alt: #f5f5f5;
     --ink: #ffffff;
     --ink-2: #d0d0d0;

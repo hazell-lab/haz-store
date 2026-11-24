@@ -66,7 +66,9 @@
     background: var(--paper-2);
     text-align: left;
     color: var(--ink);
-    transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+    transition:
+        background-color var(--dur-2) var(--ease),
+        color var(--dur-2) var(--ease);
 }
 
 .spotlight-tab::before {
@@ -332,7 +334,9 @@
     mix-blend-mode: multiply;
     opacity: 0;
     transform: scale(0.96);
-    transition: opacity var(--dur-3) var(--ease), transform var(--dur-3) var(--ease);
+    transition:
+        opacity var(--dur-3) var(--ease),
+        transform var(--dur-3) var(--ease);
 }
 
 .category-preview img.is-active {
@@ -423,7 +427,9 @@
     border-radius: 0;
     color: #0a0a0a;
     opacity: 0;
-    transition: opacity var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
+    transition:
+        opacity var(--dur-2) var(--ease),
+        background-color var(--dur-2) var(--ease);
 }
 
 .wishlist-btn:hover {
@@ -472,7 +478,11 @@
     font-weight: 700;
     opacity: 0;
     transform: translateY(100%);
-    transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+    transition:
+        opacity var(--dur-2) var(--ease),
+        transform var(--dur-2) var(--ease),
+        background-color var(--dur-2) var(--ease),
+        color var(--dur-2) var(--ease);
 }
 
 .quick-add .icon {
@@ -638,7 +648,9 @@
     font-size: var(--fs-sm);
     font-weight: 700;
     color: var(--ink);
-    transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+    transition:
+        background-color var(--dur-2) var(--ease),
+        color var(--dur-2) var(--ease);
 }
 
 .pill:hover {
@@ -805,7 +817,9 @@
     font-size: var(--fs-xs);
     font-weight: 700;
     color: var(--on-signal);
-    transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+    transition:
+        background-color var(--dur-2) var(--ease),
+        color var(--dur-2) var(--ease);
 }
 
 .chip:hover {
@@ -868,7 +882,7 @@
     --line: rgba(10, 10, 10, 0.3);
     --line-strong: #0a0a0a;
     --accent: #0a0a0a;
-    --signal: #0a0a0a;          /* tags flip to black on the yellow band */
+    --signal: #0a0a0a; /* tags flip to black on the yellow band */
     --on-signal: #ffd60a;
     --btn-bg: #0a0a0a;
     --btn-fg: #ffffff;

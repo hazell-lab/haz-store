@@ -31,7 +31,11 @@
     font-weight: 700;
     line-height: 1.2;
     white-space: nowrap;
-    transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), transform var(--dur-1) ease;
+    transition:
+        background-color var(--dur-2) var(--ease),
+        color var(--dur-2) var(--ease),
+        border-color var(--dur-2) var(--ease),
+        transform var(--dur-1) ease;
 }
 
 .btn .icon {
@@ -117,7 +121,9 @@
     text-decoration-thickness: 2px;
     text-underline-offset: 5px;
     text-decoration-color: var(--ink);
-    transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+    transition:
+        background-color var(--dur-2) var(--ease),
+        color var(--dur-2) var(--ease);
 }
 
 .btn-link:hover {
@@ -142,7 +148,9 @@
     display: grid;
     place-items: center;
     color: var(--ink);
-    transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+    transition:
+        background-color var(--dur-2) var(--ease),
+        color var(--dur-2) var(--ease);
 }
 
 .icon-btn:hover {
@@ -174,9 +182,11 @@
     background: var(--surface);
     border: 2px solid var(--line);
     border-radius: var(--radius-s);
-    font-size: 1rem;     /* 16px stops ios from zooming in */
+    font-size: 1rem; /* 16px stops ios from zooming in */
     color: var(--ink);
-    transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+    transition:
+        border-color var(--dur-2) var(--ease),
+        box-shadow var(--dur-2) var(--ease);
 }
 
 .form-control::placeholder {

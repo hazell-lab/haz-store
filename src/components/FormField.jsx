@@ -1,5 +1,5 @@
 // label, input (or select) and error message wired together for screen readers
-export function FormField({ id, label, error, full = false, as = "input", children, inputRef, ...inputProps }) {
+export function FormField({ id, label, error, full = false, as = "input", children, ...inputProps }) {
   const errorId = id + "Error";
   const Control = as;
   const className = "form-control" + (error ? " input-error" : "");
@@ -7,15 +7,7 @@ export function FormField({ id, label, error, full = false, as = "input", childr
   return (
     <div className={"form-group" + (full ? " full" : "")}>
       <label htmlFor={id}>{label}</label>
-      <Control
-        id={id}
-        name={id}
-        ref={inputRef}
-        className={className}
-        aria-describedby={errorId}
-        aria-invalid={error ? "true" : "false"}
-        {...inputProps}
-      >
+      <Control id={id} name={id} className={className} aria-describedby={errorId} aria-invalid={error ? "true" : "false"} {...inputProps}>
         {children}
       </Control>
       <span className="error-message" id={errorId}>

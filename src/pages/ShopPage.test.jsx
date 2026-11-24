@@ -1,4 +1,4 @@
-import { screen, within } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { renderApp } from "../test/renderApp.jsx";
 
@@ -17,22 +17,35 @@ describe("shop page", () => {
     expect(screen.queryByRole("button", { name: /show more products/i })).not.toBeInTheDocument();
   });
 
-  it("combines category and price filters, shows chips and syncs the url", async () => {
+  it("combines several categories and a price range, shows chips and syncs the url", async () => {
     const { user } = renderApp("/shop");
     const pills = await screen.findByRole("group", { name: /filter by category/i });
     await user.click(within(pills).getByRole("button", { name: /mice/i }));
     expect(cards()).toHaveLength(3);
     expect(within(pills).getByRole("button", { name: /mice/i })).toHaveAttribute("aria-pressed", "true");
+    expect(within(pills).getByRole("button", { name: /^all/i })).toHaveAttribute("aria-pressed", "false");
 
-    await user.selectOptions(screen.getByLabelText("Price range"), "under100");
+    // a second category adds to the first
+    await user.click(within(pills).getByRole("button", { name: /laptops/i }));
+    expect(cards()).toHaveLength(6);
+    expect(location()).toBe("/shop?category=Mice%2CLaptops");
+    expect(screen.getByRole("checkbox", { name: "Laptops" })).toBeChecked();
+
+    // move the highest price slider down
+    fireEvent.change(screen.getByLabelText(/highest price/i), { target: { value: "100" } });
     expect(cards()).toHaveLength(1);
     expect(count()).toBe("1 of 20 products match");
-    expect(location()).toBe("/shop?category=Mice&price=under100");
+    expect(location()).toBe("/shop?category=Mice%2CLaptops&max=100");
 
-    // removing the price chip keeps the category
-    await user.click(screen.getByRole("button", { name: "Remove filter Under RM100" }));
-    expect(cards()).toHaveLength(3);
+    // removing one chip keeps the rest
+    await user.click(screen.getByRole("button", { name: "Remove filter Up to RM100" }));
+    expect(cards()).toHaveLength(6);
+    await user.click(screen.getByRole("button", { name: "Remove filter Laptops" }));
     expect(location()).toBe("/shop?category=Mice");
+
+    // "all" clears the categories
+    await user.click(within(pills).getByRole("button", { name: /^all/i }));
+    expect(count()).toBe("All 20 products");
   });
 
   it("clears every filter at once but keeps the sort", async () => {
@@ -45,10 +58,10 @@ describe("shop page", () => {
   });
 
   it("restores filters from the url and ignores bad values", async () => {
-    renderApp("/shop?availability=out-of-stock&price=banana");
+    renderApp("/shop?availability=out-of-stock&min=banana");
     await screen.findByRole("heading", { level: 1 });
     expect(cards()).toHaveLength(3);
-    expect(screen.getByLabelText("Price range")).toHaveValue("all");
+    expect(screen.queryByRole("button", { name: /remove filter.*rm/i })).not.toBeInTheDocument();
     expect(screen.getByLabelText("Availability")).toHaveValue("out-of-stock");
   });
 

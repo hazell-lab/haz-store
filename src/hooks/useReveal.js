@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
 // fade in elements with the "reveal" class as they scroll into view
-// deps: run again when new content appears (route change, data loaded)
-export function useReveal(deps) {
+// key: run again when it changes (route change, data loaded)
+export function useReveal(key) {
   useEffect(() => {
     const items = [...document.querySelectorAll(".reveal:not(.is-visible)")];
     if (!("IntersectionObserver" in window)) {
@@ -18,7 +18,7 @@ export function useReveal(deps) {
           }
         });
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 }
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
     );
     items.forEach((item) => {
       // small stagger between siblings
@@ -27,5 +27,5 @@ export function useReveal(deps) {
       observer.observe(item);
     });
     return () => observer.disconnect();
-  }, deps);
+  }, [key]);
 }

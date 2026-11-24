@@ -11,13 +11,7 @@ import {
   SpotlightTabsPlaceholder,
   useSpotlight,
 } from "../components/Spotlight.jsx";
-import {
-  DEALS_LIMIT,
-  FEATURED_LIMIT,
-  FREE_SHIPPING_LIMIT,
-  SPOTLIGHT_LIMIT,
-  TOP_RATED_LIMIT,
-} from "../config.js";
+import { DEALS_LIMIT, FEATURED_LIMIT, FREE_SHIPPING_LIMIT, SPOTLIGHT_LIMIT, TOP_RATED_LIMIT } from "../config.js";
 import { useCatalog } from "../context/CatalogContext.jsx";
 import { usePageTitle } from "../hooks/usePageMeta.js";
 import { useRecentlyViewed } from "../hooks/useRecentlyViewed.js";
@@ -139,7 +133,14 @@ function Categories({ products, categories }) {
         {categories.map((category, index) => {
           const cover = getCategoryCover(products, category.name);
           return cover ? (
-            <img key={category.name} src={cover.image} alt="" loading="lazy" decoding="async" className={index === preview ? "is-active" : undefined} />
+            <img
+              key={category.name}
+              src={cover.image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className={index === preview ? "is-active" : undefined}
+            />
           ) : null;
         })}
         <div className="category-preview-label">
@@ -226,7 +227,13 @@ export default function HomePage() {
             subtitle="The biggest discounts right now, on products we already rate."
           />
           <CatalogGate skeletons={4}>
-            <ProductGrid products={getDeals(products, DEALS_LIMIT)} className="deals-grid" variant="deal" emptyIcon="star" emptyMessage="No deals right now." />
+            <ProductGrid
+              products={getDeals(products, DEALS_LIMIT)}
+              className="deals-grid"
+              variant="deal"
+              emptyIcon="star"
+              emptyMessage="No deals right now."
+            />
           </CatalogGate>
         </div>
       </section>
@@ -258,8 +265,8 @@ export default function HomePage() {
           </h2>
           {ready && <AboutStats products={products} categories={categories} />}
           <p className="about-note reveal">
-            Haz Store is a fictional shop made for a frontend portfolio project. Products, prices and stock are sample data,
-            and no real orders, payments or deliveries take place.
+            Haz Store is a fictional shop made for a frontend portfolio project. Products, prices and stock are sample data, and no real
+            orders, payments or deliveries take place.
           </p>
         </div>
       </section>

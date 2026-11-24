@@ -111,7 +111,9 @@
     border-radius: 50%;
     background: var(--surface);
     cursor: pointer;
-    transition: border-width var(--dur-1) ease, border-color var(--dur-1) ease;
+    transition:
+        border-width var(--dur-1) ease,
+        border-color var(--dur-1) ease;
 }
 
 .payment-option input:checked {
@@ -128,7 +130,9 @@
     background: var(--surface);
     font-size: var(--fs-sm);
     font-weight: 700;
-    transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+    transition:
+        border-color var(--dur-2) var(--ease),
+        box-shadow var(--dur-2) var(--ease);
 }
 
 .payment-tile .icon {

@@ -9,9 +9,9 @@ import { SearchBar } from "./SearchBar.jsx";
 
 export function Logo({ className = "logo" }) {
   return (
-    <Link to="/" className={className} aria-label="Haz Store home">
-      <span className="logo-word">Haz</span>
-      <span className="logo-dot" aria-hidden="true" />
+    // the visible words are the link name, so speech users can say what they see
+    <Link to="/" className={className}>
+      <span className="logo-word">Haz</span> <span className="logo-dot" aria-hidden="true" />
       <span className="logo-sub">Store</span>
     </Link>
   );
@@ -51,10 +51,14 @@ export function Header() {
   const previousCount = useRef(totals.itemCount);
 
   // close the menu and search after navigating
-  useEffect(() => {
+  // (adjusted during render, so there is no extra render with the old state)
+  const navKey = location.pathname + location.search + location.hash;
+  const [lastNavKey, setLastNavKey] = useState(navKey);
+  if (navKey !== lastNavKey) {
+    setLastNavKey(navKey);
     setMenuOpen(false);
     setSearchOpen(false);
-  }, [location.pathname, location.search, location.hash]);
+  }
 
   // border under the header once the page scrolls
   useEffect(() => {
@@ -162,7 +166,7 @@ export function Header() {
               <Link key={link.to} to={link.to} aria-current={isHashActive(link.to) ? "location" : undefined}>
                 {link.label}
               </Link>
-            )
+            ),
           )}
           <div className="nav-extra">
             <NavLink className="nav-extra-btn" to="/wishlist">
@@ -193,7 +197,11 @@ export function Header() {
           <button type="button" className="icon-btn hide-md" onClick={toggleTheme} aria-label={themeLabel}>
             <ThemeIcons />
           </button>
-          <NavLink to="/wishlist" className="icon-btn" aria-label={"Wishlist, " + wishlistCount + (wishlistCount === 1 ? " item" : " items")}>
+          <NavLink
+            to="/wishlist"
+            className="icon-btn"
+            aria-label={"Wishlist, " + wishlistCount + (wishlistCount === 1 ? " item" : " items")}
+          >
             <Icon name="heart" />
             {wishlistCount > 0 && <span className="badge-count">{wishlistCount}</span>}
           </NavLink>
@@ -201,13 +209,13 @@ export function Header() {
             type="button"
             className={"bag-btn" + (bump ? " bump" : "")}
             onClick={() => openPanel("cart")}
-            aria-label={"Open shopping bag, " + totals.itemCount + (totals.itemCount === 1 ? " item" : " items")}
+            aria-label={"Bag, " + totals.itemCount + (totals.itemCount === 1 ? " item" : " items")}
             aria-expanded={panel === "cart"}
             aria-controls="cartDrawer"
             onAnimationEnd={() => setBump(false)}
           >
             <Icon name="bag" />
-            <span className="bag-label">Bag</span>
+            <span className="bag-label">Bag</span>{" "}
             {totals.itemCount > 0 && (
               <span className="badge-count" data-testid="bag-count">
                 {totals.itemCount}

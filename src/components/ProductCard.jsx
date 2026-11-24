@@ -38,9 +38,7 @@ function ProductCardBase({ product, inWishlist, onAdd, onToggleWishlist, variant
           <ProductImage src={product.image} alt={product.name} eager={eager} />
         </Link>
         {outOfStock && <span className="badge badge-sold">Sold out</span>}
-        {!outOfStock && product.discount > 0 && variant !== "deal" && (
-          <span className="badge badge-sale">{getDealLabel(product)}</span>
-        )}
+        {!outOfStock && product.discount > 0 && variant !== "deal" && <span className="badge badge-sale">{getDealLabel(product)}</span>}
         {variant === "deal" && product.discount > 0 && !outOfStock && (
           <span className="deal-off" aria-hidden="true">
             &minus;{product.discount}

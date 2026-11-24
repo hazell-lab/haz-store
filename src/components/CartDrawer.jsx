@@ -54,9 +54,7 @@ export function CartDrawer() {
             Start with our editor&apos;s selection or browse the full collection.
           </EmptyState>
         ) : (
-          lines.map((line) => (
-            <CartItem key={line.id} line={line} onQuantity={setQuantity} onRemove={remove} onNavigate={closePanel} />
-          ))
+          lines.map((line) => <CartItem key={line.id} line={line} onQuantity={setQuantity} onRemove={remove} onNavigate={closePanel} />)
         )}
       </ul>
       {lines.length > 0 && (

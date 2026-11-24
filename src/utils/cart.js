@@ -52,6 +52,28 @@ export function addToCart(cart, product, quantity = 1) {
   return { cart: next, ok: true };
 }
 
+// add several products at once (wishlist "move all", order "buy again")
+// each quantity is cut down to what is left in stock
+// returns { cart, added: [{ id, quantity }], skipped: [id] }
+export function addManyToCart(cart, products, items) {
+  let next = cart;
+  const added = [];
+  const skipped = [];
+  items.forEach(({ id, quantity = 1 }) => {
+    const product = getProductById(products, id);
+    const inCart = next.find((item) => item.id === id)?.quantity || 0;
+    const room = product ? product.stock - inCart : 0;
+    const amount = Math.min(quantity, room);
+    if (amount < 1) {
+      skipped.push(id);
+      return;
+    }
+    next = addToCart(next, product, amount).cart;
+    added.push({ id, quantity: amount });
+  });
+  return { cart: next, added, skipped };
+}
+
 export function removeFromCart(cart, id) {
   return cart.filter((item) => item.id !== id);
 }
@@ -84,19 +106,23 @@ export function getCartLines(cart, products) {
     .filter(Boolean);
 }
 
-// subtotal, shipping and total (free shipping from RM300)
-export function getCartTotals(lines) {
+// subtotal, discount, shipping and total
+// free shipping from RM300, counted after the discount
+export function getCartTotals(lines, discountPercent = 0) {
   const subtotal = roundMoney(lines.reduce((sum, line) => sum + line.lineTotal, 0));
+  const discount = roundMoney((subtotal * discountPercent) / 100);
+  const afterDiscount = roundMoney(subtotal - discount);
   const itemCount = lines.reduce((sum, line) => sum + line.quantity, 0);
-  const shipping = lines.length > 0 && subtotal < FREE_SHIPPING_LIMIT ? SHIPPING_FEE : 0;
+  const shipping = lines.length > 0 && afterDiscount < FREE_SHIPPING_LIMIT ? SHIPPING_FEE : 0;
   return {
     subtotal,
+    discount,
     shipping,
-    total: roundMoney(subtotal + shipping),
+    total: roundMoney(afterDiscount + shipping),
     itemCount,
     isFreeShipping: lines.length > 0 && shipping === 0,
-    remainingForFree: Math.max(0, roundMoney(FREE_SHIPPING_LIMIT - subtotal)),
-    progress: Math.min(subtotal / FREE_SHIPPING_LIMIT, 1),
+    remainingForFree: Math.max(0, roundMoney(FREE_SHIPPING_LIMIT - afterDiscount)),
+    progress: Math.min(afterDiscount / FREE_SHIPPING_LIMIT, 1),
   };
 }
 

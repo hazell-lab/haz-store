@@ -5,14 +5,26 @@ import { CatalogGate } from "../components/CatalogGate.jsx";
 import { FormField } from "../components/FormField.jsx";
 import { Icon } from "../components/Icon.jsx";
 import { ProductImage } from "../components/ProductImage.jsx";
-import { DEMO_ORDER_DELAY, MALAYSIAN_STATES, PAYMENT_METHODS, STORAGE_KEYS } from "../config.js";
+import { DEMO_ORDER_DELAY, DEMO_PROMO, MALAYSIAN_STATES, PAYMENT_METHODS, STORAGE_KEYS } from "../config.js";
 import { useToast } from "../context/ToastContext.jsx";
 import { useCart } from "../hooks/useCart.js";
+import { useOrders } from "../hooks/useOrders.js";
 import { usePageTitle } from "../hooks/usePageMeta.js";
 import { formatPrice } from "../utils/format.js";
+import { getCartTotals } from "../utils/cart.js";
+import { checkPromoCode, createOrderRecord } from "../utils/orders.js";
 import { CHECKOUT_FIELDS, createOrderNumber, validateCheckout, validateField } from "../utils/validation.js";
 
-const EMPTY_FORM = { fullName: "", email: "", phone: "", address: "", city: "", postcode: "", state: "", payment: PAYMENT_METHODS[0].value };
+const EMPTY_FORM = {
+  fullName: "",
+  email: "",
+  phone: "",
+  address: "",
+  city: "",
+  postcode: "",
+  state: "",
+  payment: PAYMENT_METHODS[0].value,
+};
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -63,8 +75,8 @@ function OrderSuccess({ order }) {
       <p className="kicker">Demo order confirmed</p>
       <h2>Thank you, {order.name}.</h2>
       <p>
-        Your demo order {order.number} ({formatPrice(order.total)}, {order.payment}) was recorded in this browser only. No payment was
-        taken and nothing will be shipped. In a real store, a confirmation would be sent to {order.email}.
+        Your demo order {order.number} ({formatPrice(order.total)}, {order.payment}) was recorded in this browser only. No payment was taken
+        and nothing will be shipped. In a real store, a confirmation would be sent to {order.email}.
       </p>
       <dl className="order-meta">
         <div>
@@ -80,22 +92,85 @@ function OrderSuccess({ order }) {
           <dd>{order.payment}</dd>
         </div>
       </dl>
-      <Link to="/shop" className="btn btn-primary">
-        Continue shopping
-      </Link>
+      <div className="order-success-actions">
+        <Link to="/shop" className="btn btn-primary">
+          Continue shopping
+        </Link>
+        <Link to="/orders" className="btn btn-outline">
+          View demo orders
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// one openly shown demo code, so the discount maths can be tried
+function PromoCode({ promo, onApply, onRemove, disabled }) {
+  const [input, setInput] = useState("");
+  const [message, setMessage] = useState("");
+
+  function apply(event) {
+    event.preventDefault();
+    const result = checkPromoCode(input);
+    if (!result.ok) {
+      setMessage(result.message);
+      return;
+    }
+    setMessage("");
+    setInput("");
+    onApply(result);
+  }
+
+  if (promo) {
+    return (
+      <div className="promo-box promo-applied" role="status">
+        <p>
+          <strong>{promo.code}</strong> applied: {promo.percent}% off the subtotal.
+        </p>
+        <button type="button" className="btn-link btn-link-muted" onClick={onRemove} disabled={disabled}>
+          Remove code
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="promo-box">
+      <label htmlFor="promoCode">Promo code</label>
+      <div className="promo-row">
+        <input
+          id="promoCode"
+          className={"form-control" + (message ? " input-error" : "")}
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          onKeyDown={(event) => event.key === "Enter" && apply(event)}
+          autoComplete="off"
+          aria-invalid={message ? "true" : "false"}
+          aria-describedby="promoHelp"
+          disabled={disabled}
+        />
+        <button type="button" className="btn btn-outline" onClick={apply} disabled={disabled}>
+          Apply
+        </button>
+      </div>
+      <p id="promoHelp" className={message ? "error-message" : "form-note"} aria-live="polite">
+        {message || "Demo store: try " + DEMO_PROMO.code + " for " + DEMO_PROMO.percent + "% off."}
+      </p>
     </div>
   );
 }
 
 function CheckoutContent() {
-  const { lines, totals, clear } = useCart();
+  const { lines, clear } = useCart();
+  const { save: saveOrder } = useOrders();
+  const [promo, setPromo] = useState(null);
+  const totals = getCartTotals(lines, promo ? promo.percent : 0);
   const { showToast } = useToast();
   const [values, setValues] = useState(EMPTY_FORM);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [order, setOrder] = useState(readLastOrder);
-  const fieldRefs = useRef({});
   const mounted = useRef(true);
 
   // save the order while the page is open, forget it when the page is left
@@ -143,7 +218,8 @@ function CheckoutContent() {
     setErrors(nextErrors);
     const firstError = CHECKOUT_FIELDS.find((name) => nextErrors[name]);
     if (firstError) {
-      fieldRefs.current[firstError]?.focus();
+      // every field id matches its name
+      document.getElementById(firstError)?.focus();
       showToast("Please fix the errors in the form");
       return;
     }
@@ -151,17 +227,27 @@ function CheckoutContent() {
     // demo only: wait a moment to show the loading state, nothing is sent anywhere
     setSubmitting(true);
     const summary = { total: totals.total, items: totals.itemCount };
+    const record = createOrderRecord({
+      number: createOrderNumber(),
+      date: new Date(),
+      lines,
+      totals,
+      payment: values.payment,
+      promoCode: promo ? promo.code : null,
+    });
     await wait(DEMO_ORDER_DELAY);
     if (!mounted.current) {
       return;
     }
+    saveOrder(record);
     setOrder({
-      number: createOrderNumber(),
+      number: record.number,
       name: values.fullName.trim(),
       email: values.email.trim(),
       payment: values.payment,
       ...summary,
     });
+    setPromo(null);
     clear({ quiet: true });
     setValues(EMPTY_FORM);
     setTouched({});
@@ -188,9 +274,6 @@ function CheckoutContent() {
     id: name,
     value: values[name],
     error: errors[name],
-    inputRef: (node) => {
-      fieldRefs.current[name] = node;
-    },
     onChange: (event) => update(name, event.target.value),
     onBlur: () => handleBlur(name),
     disabled: submitting,
@@ -247,12 +330,14 @@ function CheckoutContent() {
               </span>
             </label>
           ))}
-          <p className="form-note payment-note">
-            Demo only: no card or bank details are asked for, and no payment is taken.
-          </p>
+          <p className="form-note payment-note">Demo only: no card or bank details are asked for, and no payment is taken.</p>
         </fieldset>
 
-        <button type="submit" className={"btn btn-primary btn-full btn-large place-order" + (submitting ? " is-loading" : "")} disabled={submitting}>
+        <button
+          type="submit"
+          className={"btn btn-primary btn-full btn-large place-order" + (submitting ? " is-loading" : "")}
+          disabled={submitting}
+        >
           {submitting ? (
             <>
               <span className="spinner" aria-hidden="true" /> Placing demo order&hellip;
@@ -288,6 +373,7 @@ function CheckoutContent() {
           ))}
         </ul>
         <ShipProgress totals={totals} />
+        <PromoCode promo={promo} onApply={setPromo} onRemove={() => setPromo(null)} disabled={submitting} />
         <CartTotals totals={totals} />
         <Link to="/cart" className="btn-link btn-link-muted summary-edit">
           Edit bag
@@ -321,8 +407,8 @@ export default function CheckoutPage() {
           <p className="section-subtitle">This is a demo checkout. No real payment is made.</p>
         </header>
         <p className="demo-banner" role="note">
-          <strong>Demo checkout.</strong> Haz Store is a portfolio project: orders are not sent anywhere, no payment is taken and
-          nothing is shipped.
+          <strong>Demo checkout.</strong> Haz Store is a portfolio project: orders are not sent anywhere, no payment is taken and nothing is
+          shipped.
         </p>
         <CatalogGate skeletons={2}>
           <CheckoutContent />

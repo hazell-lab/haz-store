@@ -58,7 +58,7 @@ export function Layout() {
   const { panel, closePanel } = useUI();
 
   useRouteFocus();
-  useReveal([location.pathname, status]);
+  useReveal(location.pathname + "|" + status);
 
   // a page change closes any open panel
   useEffect(() => {
@@ -76,9 +76,13 @@ export function Layout() {
           <span>
             Free delivery<span className="announce-long"> on orders</span> over RM300
           </span>
-          <span className="announce-sep" aria-hidden="true">/</span>
+          <span className="announce-sep" aria-hidden="true">
+            /
+          </span>
           <span>14-day returns</span>
-          <span className="announce-sep hide-sm" aria-hidden="true">/</span>
+          <span className="announce-sep hide-sm" aria-hidden="true">
+            /
+          </span>
           <span className="hide-sm">1-year warranty on everything</span>
         </p>
       </div>

@@ -21,7 +21,7 @@
 @media (max-width: 600px) {
     .announce-inner {
         gap: 8px;
-        }
+    }
 
     .announce-long {
         display: none;
@@ -34,7 +34,9 @@
     z-index: 50;
     background: var(--paper);
     border-bottom: 2px solid transparent;
-    transition: border-color var(--dur-2) var(--ease), background-color var(--dur-2) var(--ease);
+    transition:
+        border-color var(--dur-2) var(--ease),
+        background-color var(--dur-2) var(--ease);
 }
 
 .header.is-scrolled {
@@ -142,7 +144,9 @@
     border-radius: var(--radius-s);
     font-size: var(--fs-sm);
     font-weight: 700;
-    transition: background-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+    transition:
+        background-color var(--dur-2) var(--ease),
+        color var(--dur-2) var(--ease);
 }
 
 .bag-btn:hover {

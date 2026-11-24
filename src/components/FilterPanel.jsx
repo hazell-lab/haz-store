@@ -1,6 +1,6 @@
 import { useUI } from "../context/UIContext.jsx";
 import { useDialog } from "../hooks/useDialog.js";
-import { AVAILABILITY_OPTIONS, PRICE_OPTIONS, RATING_OPTIONS, SORT_OPTIONS } from "../utils/filters.js";
+import { AVAILABILITY_OPTIONS, PRICE_STEP, RATING_OPTIONS, SORT_OPTIONS, getPriceLabel } from "../utils/filters.js";
 import { Icon } from "./Icon.jsx";
 
 function Select({ id, label, value, options, onChange, className = "filter-group" }) {
@@ -18,12 +18,66 @@ function Select({ id, label, value, options, onChange, className = "filter-group
   );
 }
 
+// several categories can be picked at once
+function CategoryChecks({ categories, selected, onToggle }) {
+  return (
+    <fieldset className="filter-group filter-group-category">
+      <legend>Category</legend>
+      <div className="check-list">
+        {categories.map((category) => (
+          <label className="check-option" key={category.name}>
+            <input type="checkbox" checked={selected.includes(category.name)} onChange={() => onToggle(category.name)} />
+            <span>{category.name}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+// two sliders for the lowest and highest price (sale price, in RM)
+function PriceRange({ bounds, min, max, onChange }) {
+  const low = min ?? bounds.min;
+  const high = max ?? bounds.max;
+  if (bounds.max <= bounds.min) {
+    return null;
+  }
+  return (
+    <fieldset className="filter-group price-range">
+      <legend>Price</legend>
+      <p className="price-range-value" aria-hidden="true">
+        {min === null && max === null ? "Any price" : getPriceLabel(min, max)}
+      </p>
+      <label htmlFor="priceMin">Lowest price: RM{low}</label>
+      <input
+        type="range"
+        id="priceMin"
+        min={bounds.min}
+        max={bounds.max}
+        step={PRICE_STEP}
+        value={low}
+        // the lowest price never passes the highest
+        onChange={(event) => onChange(Math.min(Number(event.target.value), high), max)}
+      />
+      <label htmlFor="priceMax">Highest price: RM{high}</label>
+      <input
+        type="range"
+        id="priceMax"
+        min={bounds.min}
+        max={bounds.max}
+        step={PRICE_STEP}
+        value={high}
+        onChange={(event) => onChange(min, Math.max(Number(event.target.value), low))}
+      />
+    </fieldset>
+  );
+}
+
 // sidebar on desktop, bottom sheet on mobile (opened with the filters button)
-export function FilterPanel({ filters, categories, onChange, onClear, resultCount }) {
+export function FilterPanel({ filters, categories, priceBounds, onChange, onToggleCategory, onPriceChange, onClear, resultCount }) {
   const { panel, closePanel } = useUI();
   const open = panel === "filters";
   const ref = useDialog(open, closePanel);
-  const categoryOptions = [{ value: "all", label: "All" }, ...categories.map((category) => ({ value: category.name, label: category.name }))];
 
   return (
     <aside
@@ -42,16 +96,15 @@ export function FilterPanel({ filters, categories, onChange, onClear, resultCoun
       </div>
 
       <div className="filter-body">
+        <CategoryChecks categories={categories} selected={filters.category} onToggle={onToggleCategory} />
+        <PriceRange bounds={priceBounds} min={filters.min} max={filters.max} onChange={onPriceChange} />
         <Select
-          id="categoryFilter"
-          label="Category"
-          value={filters.category}
-          options={categoryOptions}
-          onChange={(value) => onChange("category", value)}
-          className="filter-group filter-group-category"
+          id="ratingFilter"
+          label="Rating"
+          value={filters.rating}
+          options={RATING_OPTIONS}
+          onChange={(value) => onChange("rating", value)}
         />
-        <Select id="priceFilter" label="Price range" value={filters.price} options={PRICE_OPTIONS} onChange={(value) => onChange("price", value)} />
-        <Select id="ratingFilter" label="Rating" value={filters.rating} options={RATING_OPTIONS} onChange={(value) => onChange("rating", value)} />
         <Select
           id="availabilityFilter"
           label="Availability"
@@ -100,7 +153,8 @@ export function ActiveFilters({ chips, onRemove, onClearAll }) {
 }
 
 // quick category buttons above the grid
-export function CategoryPills({ categories, products, value, onChange }) {
+// "all" clears the list, the others switch a category on or off
+export function CategoryPills({ categories, products, selected, onToggle, onClear }) {
   const pills = [
     { name: "all", label: "All", count: products.length },
     ...categories.map((category) => ({
@@ -112,7 +166,13 @@ export function CategoryPills({ categories, products, value, onChange }) {
   return (
     <div className="category-pills" role="group" aria-label="Filter by category">
       {pills.map((pill) => (
-        <button type="button" key={pill.name} className="pill" aria-pressed={value === pill.name} onClick={() => onChange(pill.name)}>
+        <button
+          type="button"
+          key={pill.name}
+          className="pill"
+          aria-pressed={pill.name === "all" ? selected.length === 0 : selected.includes(pill.name)}
+          onClick={() => (pill.name === "all" ? onClear() : onToggle(pill.name))}
+        >
           {pill.label} <span className="pill-count">{pill.count}</span>
         </button>
       ))}

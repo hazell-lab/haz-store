@@ -31,7 +31,6 @@ export function ProductGallery({ product }) {
         type="button"
         className={"zoom-frame" + (zoomed ? " is-zoomed" : "")}
         aria-pressed={zoomed}
-        aria-label={"Zoom image of " + product.name}
         onClick={(event) => {
           if (!zoomed) moveZoom(event);
           setZoomed(!zoomed);
@@ -39,11 +38,13 @@ export function ProductGallery({ product }) {
         onPointerMove={(event) => zoomed && moveZoom(event)}
         onPointerLeave={(event) => event.pointerType === "mouse" && setZoomed(false)}
       >
-        <ProductImage src={product.image} alt={product.name} eager />
+        {/* the button text names the photo, so the image itself is not read twice */}
+        <ProductImage src={product.image} alt="" eager />
         <span className="zoom-hint">
           <Icon name="zoom" />
           <span className="zoom-hint-desktop">Click to zoom</span>
           <span className="zoom-hint-touch">Tap to zoom</span>
+          <span className="visually-hidden">, photo of {product.name}</span>
         </span>
       </button>
     </div>

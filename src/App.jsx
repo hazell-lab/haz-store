@@ -13,6 +13,8 @@ const ProductPage = lazy(() => import("./pages/ProductPage.jsx"));
 const CartPage = lazy(() => import("./pages/CartPage.jsx"));
 const WishlistPage = lazy(() => import("./pages/WishlistPage.jsx"));
 const CheckoutPage = lazy(() => import("./pages/CheckoutPage.jsx"));
+const OrdersPage = lazy(() => import("./pages/OrdersPage.jsx"));
+const ComparePage = lazy(() => import("./pages/ComparePage.jsx"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage.jsx"));
 
 export function AppRoutes() {
@@ -25,6 +27,8 @@ export function AppRoutes() {
         <Route path="cart" element={<CartPage />} />
         <Route path="wishlist" element={<WishlistPage />} />
         <Route path="checkout" element={<CheckoutPage />} />
+        <Route path="orders" element={<OrdersPage />} />
+        <Route path="compare" element={<ComparePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

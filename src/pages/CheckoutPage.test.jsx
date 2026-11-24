@@ -58,7 +58,14 @@ describe("demo checkout", () => {
   });
 
   it("keeps the confirmation after a refresh and forgets it once the page is left", async () => {
-    const saved = { number: "HAZ-123456", name: "Test Buyer", email: "test@example.com", payment: "Online banking", total: 209.2, items: 1 };
+    const saved = {
+      number: "HAZ-123456",
+      name: "Test Buyer",
+      email: "test@example.com",
+      payment: "Online banking",
+      total: 209.2,
+      items: 1,
+    };
     window.sessionStorage.setItem(STORAGE_KEYS.lastOrder, JSON.stringify(saved));
     const { user } = renderApp("/checkout");
 
